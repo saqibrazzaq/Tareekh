@@ -1,0 +1,29 @@
+﻿@page "{lang=en}/{city=}"
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Model.H1</h1>
+    <h2 class="display-6">@Model.H2</h2>
+</div>
+
+<table class="table">
+    <tr>
+        <td>@Model.CityLabel</td>
+        <td>@Model.CityName, @Model.StateName, @Model.CountryName</td>
+    </tr>
+    <tr>
+        <td>@Model.localTimeLabel</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>@Model.dateTodayLabel</td>
+        <td>@Model.dateToday</td>
+    </tr>
+    <tr>
+        <td>@Model.hijriDateTodayLabel</td>
+        <td></td>
+    </tr>
+</table>
