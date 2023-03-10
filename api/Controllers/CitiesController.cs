@@ -51,7 +51,7 @@ namespace api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("countByStateId/{stateId}")]
+        [HttpGet("count/{stateId}")]
         public IActionResult CountByStateId(int stateId)
         {
             var result = _cityService.Count(stateId);
