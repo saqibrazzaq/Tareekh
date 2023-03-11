@@ -8,14 +8,14 @@ interface IconProps {
 
 const TranslationIcon = ({size = "sm", fontSize = "18"}: IconProps) => {
   return (
-    <Tooltip label="Translate">
+    <Tooltip label="Languages">
       <IconButton
         variant="outline"
         size={size}
         fontSize={fontSize}
         colorScheme="blue"
         icon={<HiOutlineTranslate />}
-        aria-label="Translate"
+        aria-label="Languages"
       />
     </Tooltip>
   );

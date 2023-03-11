@@ -18,8 +18,7 @@ export class CountryNameReqEdit {
   countryId?: string = "";
   name?: string = "";
 
-  constructor(languageId?: string, countryId?: string) {
-    this.languageId = languageId;
+  constructor(countryId?: string) {
     this.countryId = countryId;
   }
 }
