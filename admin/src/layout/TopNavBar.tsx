@@ -101,7 +101,7 @@ const TopNavBar = () => {
             fontFamily={"heading"}
             color={useColorModeValue("gray.800", "white")}
           >
-            <RouteLink to="/contacts">
+            <RouteLink to="/">
               {/* <Image src="/saleone-logo.png" height={"30px"} /> */}
               Home
             </RouteLink>

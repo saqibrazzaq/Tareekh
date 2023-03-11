@@ -6,13 +6,13 @@ namespace service.Services.Interfaces
 {
     public interface ICountryService
     {
-        Country? Get(int countryId);
-        Country? GetBySlug(string slug);
-        Country? Create(Country country);
-        Country? Update(int countryId, Country country);
+        CountryRes? Get(int countryId);
+        CountryRes? GetBySlug(string slug);
+        CountryRes? Create(CountryReqEdit dto);
+        CountryRes? Update(int countryId, CountryReqEdit dto);
         void Delete(int countryId);
         int Count();
-        ApiOkPagedResponse<IEnumerable<Country>, MetaData>
+        ApiOkPagedResponse<IEnumerable<CountryRes>, MetaData>
             Search(CountryReqSearch dto);
     }
 }

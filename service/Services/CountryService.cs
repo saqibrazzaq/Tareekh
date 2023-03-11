@@ -24,11 +24,12 @@ namespace service.Services
                 .Count();
         }
 
-        public Country? Create(Country country)
+        public CountryRes? Create(CountryReqEdit dto)
         {
-            _repositoryManager.CountryRepository.Create(country);
+            var entity = _mapper.Map<Country>(dto);
+            _repositoryManager.CountryRepository.Create(entity);
             _repositoryManager.Save();
-            return country;
+            return _mapper.Map<CountryRes>(entity);
         }
 
         public void Delete(int countryId)
@@ -38,9 +39,10 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public Country? Get(int countryId)
+        public CountryRes? Get(int countryId)
         {
-            return FindCountryIfExists(countryId, false);
+            var entity = FindCountryIfExists(countryId, false);
+            return _mapper.Map<CountryRes>(entity);
         }
 
         private Country? FindCountryIfExists(int countryId, bool trackChanges)
@@ -54,7 +56,7 @@ namespace service.Services
             return entity;
         }
 
-        public Country? GetBySlug(string slug)
+        public CountryRes? GetBySlug(string slug)
         {
             var entity = _repositoryManager.CountryRepository.FindByCondition(
                 x => x.Slug == slug,
@@ -62,23 +64,24 @@ namespace service.Services
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No country found with id " + slug); }
 
-            return entity;
+            return _mapper.Map<CountryRes>(entity);
         }
 
-        public ApiOkPagedResponse<IEnumerable<Country>, MetaData> Search(CountryReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<CountryRes>, MetaData> Search(CountryReqSearch dto)
         {
             var pagedEntities = _repositoryManager.CountryRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<Country>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<CountryRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<CountryRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 
-        public Country? Update(int countryId, Country country)
+        public CountryRes? Update(int countryId, CountryReqEdit dto)
         {
             var entity = FindCountryIfExists(countryId, true);
-            _mapper.Map(country, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<CountryRes>(entity);
         }
     }
 }

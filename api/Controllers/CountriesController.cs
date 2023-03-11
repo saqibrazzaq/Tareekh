@@ -31,26 +31,21 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] CountryReqSearch dto)
         {
-            var result = _countryService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<CountryRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<CountryRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _countryService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{countryId}")]
         public IActionResult Get(int countryId)
         {
-            var result = _countryService.Get(countryId);
-            var res = _mapper.Map<CountryRes>(result);
+            var res = _countryService.Get(countryId);
             return Ok(res);
         }
 
         [HttpGet("slug/{slug}")]
         public IActionResult GetBySlug(string slug)
         {
-            var result = _countryService.GetBySlug(slug);
-            var res = _mapper.Map<CountryRes>(result);
+            var res = _countryService.GetBySlug(slug);
             return Ok(res);
         }
 
@@ -64,18 +59,14 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Create(CountryReqEdit dto)
         {
-            var entity = _mapper.Map<Country>(dto);
-            var result = _countryService.Create(entity);
-            var res = _mapper.Map<CountryRes>(result);
+            var res = _countryService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{countryId}")]
         public IActionResult Update(int countryId, CountryReqEdit dto)
         {
-            var entity = _mapper.Map<Country>(dto);
-            var result = _countryService.Update(countryId, entity);
-            var res = _mapper.Map<CountryRes>(result);
+            var res = _countryService.Update(countryId, dto);
             return Ok(res);
         }
 
