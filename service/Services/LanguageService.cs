@@ -29,11 +29,12 @@ namespace service.Services
                 .Count();
         }
 
-        public Language? Create(Language language)
+        public LanguageRes? Create(LanguageReqEdit dto)
         {
-            _repositoryManager.LanguageRepository.Create(language);
+            var entity = _mapper.Map<Language>(dto);
+            _repositoryManager.LanguageRepository.Create(entity);
             _repositoryManager.Save();
-            return language;
+            return _mapper.Map<LanguageRes>(entity);
         }
 
         public void Delete(int languageId)
@@ -43,9 +44,10 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public Language? Get(int languageId)
+        public LanguageRes? Get(int languageId)
         {
-            return FindLanguageIfExists(languageId, false);
+            var entity = FindLanguageIfExists(languageId, false);
+            return _mapper.Map<LanguageRes>(entity);
         }
 
         private Language? FindLanguageIfExists(int languageId, bool trackChanges)
@@ -59,20 +61,21 @@ namespace service.Services
             return entity;
         }
 
-        public ApiOkPagedResponse<IEnumerable<Language>, MetaData> Search(LanguageReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<LanguageRes>, MetaData> Search(LanguageReqSearch dto)
         {
             var pagedEntities = _repositoryManager.LanguageRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<Language>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<LanguageRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<LanguageRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 
-        public Language? Update(int languageId, Language language)
+        public LanguageRes? Update(int languageId, LanguageReqEdit dto)
         {
             var entity = FindLanguageIfExists(languageId, true);
-            _mapper.Map(language, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<LanguageRes>(entity);
         }
     }
 }

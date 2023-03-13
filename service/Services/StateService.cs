@@ -33,11 +33,12 @@ namespace service.Services
                 .Count();
         }
 
-        public State? Create(State state)
+        public StateRes? Create(StateReqEdit dto)
         {
-            _repositoryManager.StateRepository.Create(state);
+            var entity = _mapper.Map<State>(dto);
+            _repositoryManager.StateRepository.Create(entity);
             _repositoryManager.Save();
-            return state;
+            return _mapper.Map<StateRes>(entity);
         }
 
         public void Delete(int stateId)
@@ -47,23 +48,25 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public State? Get(int stateId)
+        public StateRes? Get(int stateId)
         {
-            return FindStateIfExists(stateId, false);
+            var entity = FindStateIfExists(stateId, false);
+            return _mapper.Map<StateRes>(entity);
         }
 
         private State? FindStateIfExists(int stateId, bool trackChanges)
         {
             var entity = _repositoryManager.StateRepository.FindByCondition(
                 x => x.StateId == stateId,
-                trackChanges)
+                trackChanges,
+                include: i => i.Include(x => x.Country))
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No State found with id " + stateId); }
 
             return entity;
         }
 
-        public State? GetBySlug(string slug)
+        public StateRes? GetBySlug(string slug)
         {
             var entity = _repositoryManager.StateRepository.FindByCondition(
                 x => x.Slug == slug,
@@ -72,23 +75,24 @@ namespace service.Services
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No state found with slug " + slug); }
 
-            return entity;
+            return _mapper.Map<StateRes>(entity);
         }
 
-        public ApiOkPagedResponse<IEnumerable<State>, MetaData> Search(StateReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<StateRes>, MetaData> Search(StateReqSearch dto)
         {
             var pagedEntities = _repositoryManager.StateRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<State>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<StateRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<StateRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 
-        public State? Update(int stateId, State state)
+        public StateRes? Update(int stateId, StateReqEdit dto)
         {
             var entity = FindStateIfExists(stateId, true);
-            _mapper.Map(state, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<StateRes>(entity);
         }
     }
 }

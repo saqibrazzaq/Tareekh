@@ -27,7 +27,7 @@ const CountryNamesEdit = () => {
   const params = useParams();
   const countryNameId = params.countryNameId;
   const countryId = params.countryId;
-  const updateText = countryNameId ? "Update Language" : "Add Language";
+  const updateText = countryNameId ? "Update Name" : "Add Name";
   // console.log("person id: " + personId)
   // console.log(updateText)
   const [countryName, setCountryName] = useState<CountryNameReqEdit>(new CountryNameReqEdit(countryId));
@@ -47,12 +47,12 @@ const CountryNamesEdit = () => {
       CountryNamesApi.get(countryNameId)
         .then((res) => {
           setCountryName(res);
-          setSelectedLanguage(res.LanguageId)
+          setSelectedLanguage(res.language)
         })
         .catch((error) => {
           setError(error.response.data.error);
           toast({
-            title: "Failed to get Country Language",
+            title: "Failed to get Country Name",
             description: error.response.data.error,
             status: "error",
             position: "bottom-right",
@@ -83,11 +83,11 @@ const CountryNamesEdit = () => {
       .then((res) => {
         toast({
           title: "Success",
-          description: "Country Language updated successfully.",
+          description: "Country Name updated successfully.",
           status: "success",
           position: "bottom-right",
         });
-        navigate("/countries/" + countryId + "/languages");
+        navigate(-1);
       })
       .catch((error) => {
         setError(error.response.data.error);
@@ -100,11 +100,11 @@ const CountryNamesEdit = () => {
       .then((res) => {
         toast({
           title: "Success",
-          description: "Country Language created successfully.",
+          description: "Country Name created successfully.",
           status: "success",
           position: "bottom-right",
         });
-        navigate("/countries/" + countryId + "/languages");
+        navigate(-1);
       })
       .catch((error) => {
         setError(error.response.data.error);
@@ -127,7 +127,7 @@ const CountryNamesEdit = () => {
               <FormControl isInvalid={!!errors.name && touched.name}>
                 <FormLabel fontSize={"sm"} htmlFor="name">Name</FormLabel>
                 <Field size={"sm"} as={Input} id="name" name="name" type="text" />
-                <Field size={"sm"} as={Input} id="countryId" name="countryId" type="text" />
+                <Field size={"sm"} as={Input} id="countryId" name="countryId" type="hidden" />
                 <FormErrorMessage>{errors.name}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={!!errors.languageId && touched.languageId}>

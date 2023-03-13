@@ -30,18 +30,14 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] CountryNameReqSearch dto)
         {
-            var result = _countryNameService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<CountryNameRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<CountryNameRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _countryNameService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{countryNameId}")]
         public IActionResult Get(int countryNameId)
         {
-            var result = _countryNameService.Get(countryNameId);
-            var res = _mapper.Map<CountryNameRes>(result);
+            var res = _countryNameService.Get(countryNameId);
             return Ok(res);
         }
 
@@ -55,18 +51,14 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Create(CountryNameReqEdit dto)
         {
-            var entity = _mapper.Map<CountryName>(dto);
-            var result = _countryNameService.Create(entity);
-            var res = _mapper.Map<CountryNameRes>(result);
+            var res = _countryNameService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{countryNameId}")]
         public IActionResult Update(int countryNameId, CountryNameReqEdit dto)
         {
-            var entity = _mapper.Map<CountryName>(dto);
-            var result = _countryNameService.Update(countryNameId, entity);
-            var res = _mapper.Map<CountryNameRes>(result);
+            var res = _countryNameService.Update(countryNameId, dto);
             return Ok(res);
         }
 

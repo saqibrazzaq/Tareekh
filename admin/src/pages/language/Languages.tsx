@@ -19,8 +19,6 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { CountryApi } from "../../api/countryApi";
-import { CountryRes } from "../../dtos/Country";
 import {
   Link as RouteLink,
   useLocation,
@@ -31,24 +29,24 @@ import Common from "../../utility/Common";
 import UpdateIcon from "../../components/icons/UpdateIcon";
 import DeleteIcon from "../../components/icons/DeleteIcon";
 import PagedRes from "../../dtos/PagedRes";
-import TranslationIcon from "../../components/icons/TranslationIcon";
-import StateIcon from "../../components/icons/StateIcon";
+import { LanguageRes } from "../../dtos/Language";
+import { LanguageApi } from "../../api/languageApi";
 
-const Countries = () => {
+const Languages = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams(location.search);
   searchParams.set("pageSize", Common.DEFAULT_PAGE_SIZE.toString());
 
-  const [pagedRes, setPagedRes] = useState<PagedRes<CountryRes>>();
+  const [pagedRes, setPagedRes] = useState<PagedRes<LanguageRes>>();
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    searchCountries();
+    searchLanguages();
   }, [searchParams]);
 
-  const searchCountries = () => {
+  const searchLanguages = () => {
     if (!searchParams) return;
-    CountryApi.search(Object.fromEntries(searchParams)).then((res) => {
+    LanguageApi.search(Object.fromEntries(searchParams)).then((res) => {
       setPagedRes(res);
       // console.log(res)
     });
@@ -76,13 +74,13 @@ const Countries = () => {
   const showHeading = () => (
     <Flex>
       <Box>
-        <Heading fontSize={"lg"}>Country List</Heading>
+        <Heading fontSize={"lg"}>Language List</Heading>
       </Box>
       <Spacer />
       <Box>
-        <Link ml={2} as={RouteLink} to={"/countries/edit"}>
+        <Link ml={2} as={RouteLink} to={"/languages/edit"}>
           <Button colorScheme={"blue"} size={"sm"}>
-            Add Country
+            Add Language
           </Button>
         </Link>
       </Box>
@@ -128,45 +126,27 @@ const Countries = () => {
       <Table variant="simple" size={"sm"}>
         <Thead>
           <Tr>
-            <Th>Slug</Th>
-            <Th>Names</Th>
+            <Th>Code</Th>
+            <Th>Name</Th>
             <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
           {pagedRes?.pagedList?.map((item) => (
-            <Tr key={item.countryId}>
-              <Td>{item.slug}</Td>
-              <Td>{
-              item.countryNames?.map(n => (
-                n.name + " , "
-              ))
-              }</Td>
+            <Tr key={item.languageId}>
+              <Td>{item.languageCode}</Td>
+              <Td>{item.name}</Td>
               <Td>
                 <Link
                   mr={2}
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/names"}
-                >
-                  <TranslationIcon size="xs" fontSize="15" />
-                </Link>
-                <Link
-                  mr={2}
-                  as={RouteLink}
-                  to={"/countries/" + item.countryId + "/states"}
-                >
-                  <StateIcon size="xs" fontSize="15" />
-                </Link>
-                <Link
-                  mr={2}
-                  as={RouteLink}
-                  to={"/countries/" + item.countryId + "/edit/"}
+                  to={"/languages/" + item.languageId + "/edit/"}
                 >
                   <UpdateIcon size="xs" fontSize="15" />
                 </Link>
                 <Link
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/delete/"}
+                  to={"/languages/" + item.languageId + "/delete/"}
                 >
                   <DeleteIcon size="xs" fontSize="15" />
                 </Link>
@@ -211,6 +191,6 @@ const Countries = () => {
       </Stack>
     </Box>
   );
-};
+}
 
-export default Countries;
+export default Languages

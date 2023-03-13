@@ -47,16 +47,12 @@ const TopNavBar = () => {
         href: "/countries",
       },
       {
-        name: "States",
-        href: "/states",
+        name: "Languages",
+        href: "/languages",
       },
       {
-        name: "Cities",
-        href: "/cities",
-      },
-      {
-        name: "Settings",
-        href: "/settings",
+        name: "Time Zones",
+        href: "/timezones",
       },
     ];
     setNavItems(menuItems);

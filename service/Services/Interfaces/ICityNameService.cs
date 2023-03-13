@@ -11,12 +11,12 @@ namespace service.Services.Interfaces
 {
     public interface ICityNameService
     {
-        CityName? Get(int cityNameId);
-        CityName? Create(CityName cityName);
-        CityName? Update(int cityNameId, CityName cityName);
+        CityNameRes? Get(int cityNameId);
+        CityNameRes? Create(CityNameReqEdit dto);
+        CityNameRes? Update(int cityNameId, CityNameReqEdit dto);
         void Delete(int cityNameId);
         int Count(int cityId);
-        ApiOkPagedResponse<IEnumerable<CityName>, MetaData>
+        ApiOkPagedResponse<IEnumerable<CityNameRes>, MetaData>
             Search(CityNameReqSearch dto);
     }
 }

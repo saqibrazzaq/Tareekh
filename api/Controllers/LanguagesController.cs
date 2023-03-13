@@ -30,18 +30,14 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] LanguageReqSearch dto)
         {
-            var result = _languageService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<LanguageRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<LanguageRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _languageService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{languageId}")]
         public IActionResult Get(int languageId)
         {
-            var result = _languageService.Get(languageId);
-            var res = _mapper.Map<LanguageRes>(result);
+            var res = _languageService.Get(languageId);
             return Ok(res);
         }
 
@@ -55,18 +51,14 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Create(LanguageReqEdit dto)
         {
-            var entity = _mapper.Map<Language>(dto);
-            var result = _languageService.Create(entity);
-            var res = _mapper.Map<LanguageRes>(result);
+            var res = _languageService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{languageId}")]
         public IActionResult Update(int languageId, LanguageReqEdit dto)
         {
-            var entity = _mapper.Map<Language>(dto);
-            var result = _languageService.Update(languageId, entity);
-            var res = _mapper.Map<LanguageRes>(result);
+            var res = _languageService.Update(languageId, dto);
             return Ok(res);
         }
 

@@ -29,11 +29,12 @@ namespace service.Services
                 .Count();
         }
 
-        public Timezone? Create(Timezone timezone)
+        public TimezoneRes? Create(TimezoneReqEdit dto)
         {
-            _repositoryManager.TimezoneRepository.Create(timezone);
+            var entity = _mapper.Map<Timezone>(dto);
+            _repositoryManager.TimezoneRepository.Create(entity);
             _repositoryManager.Save();
-            return timezone;
+            return _mapper.Map<TimezoneRes>(entity);
         }
 
         public void Delete(int timezoneId)
@@ -43,9 +44,10 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public Timezone? Get(int timezoneId)
+        public TimezoneRes? Get(int timezoneId)
         {
-            return FindTimezoneIfExists(timezoneId, false);
+            var entity = FindTimezoneIfExists(timezoneId, false);
+            return _mapper.Map<TimezoneRes>(entity);
         }
 
         private Timezone? FindTimezoneIfExists(int timezoneId, bool trackChanges)
@@ -59,20 +61,21 @@ namespace service.Services
             return entity;
         }
 
-        public ApiOkPagedResponse<IEnumerable<Timezone>, MetaData> Search(TimezoneReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<TimezoneRes>, MetaData> Search(TimezoneReqSearch dto)
         {
             var pagedEntities = _repositoryManager.TimezoneRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<Timezone>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<TimezoneRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<TimezoneRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 
-        public Timezone? Update(int timezoneId, Timezone timezone)
+        public TimezoneRes? Update(int timezoneId, TimezoneReqEdit dto)
         {
             var entity = FindTimezoneIfExists(timezoneId, true);
-            _mapper.Map(timezone, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<TimezoneRes>(entity);
         }
     }
 }

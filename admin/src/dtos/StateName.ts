@@ -18,8 +18,7 @@ export class StateNameReqEdit {
   stateId?: string = "";
   name?: string = "";
 
-  constructor(languageId?: string, stateId?: string) {
-    this.languageId = languageId;
+  constructor(stateId?: string) {
     this.stateId = stateId;
   }
 }

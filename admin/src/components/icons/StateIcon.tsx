@@ -1,24 +1,24 @@
 import { IconButton, Tooltip } from '@chakra-ui/react';
-import { HiOutlineTranslate } from "react-icons/hi";
+import { FaMapMarkedAlt } from "react-icons/fa";
 
 interface IconProps {
   size?: string;
   fontSize?: string;
 }
 
-const TranslationIcon = ({size = "sm", fontSize = "18"}: IconProps) => {
+const StateIcon = ({size = "sm", fontSize = "18"}: IconProps) => {
   return (
-    <Tooltip label="Names">
+    <Tooltip label="States">
       <IconButton
         variant="outline"
         size={size}
         fontSize={fontSize}
         colorScheme="blue"
-        icon={<HiOutlineTranslate />}
-        aria-label="Names"
+        icon={<FaMapMarkedAlt />}
+        aria-label="States"
       />
     </Tooltip>
   );
 }
 
-export default TranslationIcon
+export default StateIcon

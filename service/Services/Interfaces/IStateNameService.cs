@@ -11,12 +11,12 @@ namespace service.Services.Interfaces
 {
     public interface IStateNameService
     {
-        StateName? Get(int stateNameId);
-        StateName? Create(StateName stateName);
-        StateName? Update(int stateNameId, StateName stateName);
+        StateNameRes? Get(int stateNameId);
+        StateNameRes? Create(StateNameReqEdit dto);
+        StateNameRes? Update(int stateNameId, StateNameReqEdit dto);
         void Delete(int stateNameId);
         int Count(int stateId);
-        ApiOkPagedResponse<IEnumerable<StateName>, MetaData>
+        ApiOkPagedResponse<IEnumerable<StateNameRes>, MetaData>
             Search(StateNameReqSearch dto);
     }
 }

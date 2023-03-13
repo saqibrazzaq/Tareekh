@@ -30,18 +30,14 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] CityNameReqSearch dto)
         {
-            var result = _cityNameService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<CityNameRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<CityNameRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _cityNameService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{cityNameId}")]
         public IActionResult Get(int cityNameId)
         {
-            var result = _cityNameService.Get(cityNameId);
-            var res = _mapper.Map<CityNameRes>(result);
+            var res = _cityNameService.Get(cityNameId);
             return Ok(res);
         }
 
@@ -55,18 +51,14 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Create(CityNameReqEdit dto)
         {
-            var entity = _mapper.Map<CityName>(dto);
-            var result = _cityNameService.Create(entity);
-            var res = _mapper.Map<CityNameRes>(result);
+            var res = _cityNameService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{cityNameId}")]
         public IActionResult Update(int cityNameId, CityNameReqEdit dto)
         {
-            var entity = _mapper.Map<CityName>(dto);
-            var result = _cityNameService.Update(cityNameId, entity);
-            var res = _mapper.Map<CityNameRes>(result);
+            var res = _cityNameService.Update(cityNameId, dto);
             return Ok(res);
         }
 

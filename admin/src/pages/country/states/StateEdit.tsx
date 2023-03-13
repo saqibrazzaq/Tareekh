@@ -15,38 +15,39 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Link as RouteLink, useNavigate, useParams } from "react-router-dom";
-import { CountryApi } from "../../api/countryApi";
-import { CountryReqEdit } from "../../dtos/Country";
 import * as Yup from "yup";
 import { Field, Formik } from "formik";
-import { AlertBox } from "../../utility/Alerts";
+import { AlertBox } from "../../../utility/Alerts";
+import { StateReqEdit, StateRes } from "../../../dtos/State";
+import { StateApi } from "../../../api/stateApi";
 
-const CountryEdit = () => {
+const StateEdit = () => {
   const params = useParams();
+  const stateId = params.stateId;
   const countryId = params.countryId;
-  const updateText = countryId ? "Update Country" : "Add Country";
+  const updateText = stateId ? "Update State" : "Add State";
   // console.log("person id: " + personId)
   // console.log(updateText)
-  const [country, setCountry] = useState<CountryReqEdit>(new CountryReqEdit());
+  const [countryName, setCountryName] = useState<StateReqEdit>(new StateReqEdit(countryId));
   const toast = useToast();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
   useEffect(() => {
-    loadCountry();
-  }, [countryId]);
+    loadState();
+  }, [stateId]);
 
-  const loadCountry = () => {
+  const loadState = () => {
     setError("");
-    if (countryId) {
-      CountryApi.get(countryId)
+    if (stateId) {
+      StateApi.get(stateId)
         .then((res) => {
-          setCountry(res);
+          setCountryName(res);
         })
         .catch((error) => {
           setError(error.response.data.error);
           toast({
-            title: "Failed to get Country",
+            title: "Failed to get State",
             description: error.response.data.error,
             status: "error",
             position: "bottom-right",
@@ -57,42 +58,43 @@ const CountryEdit = () => {
 
   // Formik validation schema
   const validationSchema = Yup.object({
-    slug: Yup.string().required("Slug is required"),
+    slug: Yup.string().required("Name is required"),
+    countryId: Yup.number().required().min(1),
   });
 
-  const submitForm = (values: CountryReqEdit) => {
+  const submitForm = (values: StateReqEdit) => {
     // console.log(values);
-    if (countryId) {
-      updateCountry(values);
+    if (stateId) {
+      updateState(values);
     } else {
-      createCountry(values);
+      createState(values);
     }
   };
 
-  const updateCountry = (values: CountryReqEdit) => {
+  const updateState = (values: StateReqEdit) => {
     setError("");
-    CountryApi.update(countryId, values)
+    StateApi.update(stateId, values)
       .then((res) => {
         toast({
           title: "Success",
-          description: "Country updated successfully.",
+          description: "State updated successfully.",
           status: "success",
           position: "bottom-right",
         });
-        navigate("/countries");
+        navigate(-1);
       })
       .catch((error) => {
         setError(error.response.data.error);
       });
   };
 
-  const createCountry = (values: CountryReqEdit) => {
+  const createState = (values: StateReqEdit) => {
     setError("");
-    CountryApi.create(values)
+    StateApi.create(values)
       .then((res) => {
         toast({
           title: "Success",
-          description: "Country created successfully.",
+          description: "State created successfully.",
           status: "success",
           position: "bottom-right",
         });
@@ -106,7 +108,7 @@ const CountryEdit = () => {
   const showUpdateForm = () => (
     <Box p={0}>
       <Formik
-        initialValues={country}
+        initialValues={countryName}
         onSubmit={(values) => {
           submitForm(values);
         }}
@@ -119,6 +121,7 @@ const CountryEdit = () => {
               <FormControl isInvalid={!!errors.slug && touched.slug}>
                 <FormLabel fontSize={"sm"} htmlFor="slug">Slug</FormLabel>
                 <Field size={"sm"} as={Input} id="slug" name="slug" type="text" />
+                <Field size={"sm"} as={Input} id="countryId" name="countryId" type="hidden" />
                 <FormErrorMessage>{errors.slug}</FormErrorMessage>
               </FormControl>
               <Stack direction={"row"} spacing={6}>
@@ -158,4 +161,4 @@ const CountryEdit = () => {
   );
 }
 
-export default CountryEdit
+export default StateEdit

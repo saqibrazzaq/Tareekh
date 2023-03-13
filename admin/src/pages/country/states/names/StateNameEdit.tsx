@@ -15,38 +15,44 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Link as RouteLink, useNavigate, useParams } from "react-router-dom";
-import { CountryApi } from "../../api/countryApi";
-import { CountryReqEdit } from "../../dtos/Country";
 import * as Yup from "yup";
 import { Field, Formik } from "formik";
-import { AlertBox } from "../../utility/Alerts";
+import { AlertBox } from "../../../../utility/Alerts";
+import LanguageDropdown from "../../../../dropdowns/LanguageDropdown";
+import { LanguageRes } from "../../../../dtos/Language";
+import { StateNameReqEdit } from "../../../../dtos/StateName";
+import { StateNamesApi } from "../../../../api/stateNamesApi";
 
-const CountryEdit = () => {
+const StateNameEdit = () => {
   const params = useParams();
-  const countryId = params.countryId;
-  const updateText = countryId ? "Update Country" : "Add Country";
+  const stateNameId = params.stateNameId;
+  const stateId = params.stateId;
+  const updateText = stateNameId ? "Update Name" : "Add Name";
   // console.log("person id: " + personId)
   // console.log(updateText)
-  const [country, setCountry] = useState<CountryReqEdit>(new CountryReqEdit());
+  const [stateName, setStateName] = useState<StateNameReqEdit>(new StateNameReqEdit(stateId));
   const toast = useToast();
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    loadCountry();
-  }, [countryId]);
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageRes>();
 
-  const loadCountry = () => {
+  useEffect(() => {
+    loadStateName();
+  }, [stateNameId]);
+
+  const loadStateName = () => {
     setError("");
-    if (countryId) {
-      CountryApi.get(countryId)
+    if (stateNameId) {
+      StateNamesApi.get(stateNameId)
         .then((res) => {
-          setCountry(res);
+          setStateName(res);
+          setSelectedLanguage(res.language)
         })
         .catch((error) => {
           setError(error.response.data.error);
           toast({
-            title: "Failed to get Country",
+            title: "Failed to get State Name",
             description: error.response.data.error,
             status: "error",
             position: "bottom-right",
@@ -57,42 +63,44 @@ const CountryEdit = () => {
 
   // Formik validation schema
   const validationSchema = Yup.object({
-    slug: Yup.string().required("Slug is required"),
+    name: Yup.string().required("Name is required"),
+    languageId: Yup.number().required("Select Language").min(1),
+    stateId: Yup.number().required().min(1),
   });
 
-  const submitForm = (values: CountryReqEdit) => {
+  const submitForm = (values: StateNameReqEdit) => {
     // console.log(values);
-    if (countryId) {
-      updateCountry(values);
+    if (stateNameId) {
+      updateStateName(values);
     } else {
-      createCountry(values);
+      createStateName(values);
     }
   };
 
-  const updateCountry = (values: CountryReqEdit) => {
+  const updateStateName = (values: StateNameReqEdit) => {
     setError("");
-    CountryApi.update(countryId, values)
+    StateNamesApi.update(stateNameId, values)
       .then((res) => {
         toast({
           title: "Success",
-          description: "Country updated successfully.",
+          description: "State Name updated successfully.",
           status: "success",
           position: "bottom-right",
         });
-        navigate("/countries");
+        navigate(-1);
       })
       .catch((error) => {
         setError(error.response.data.error);
       });
   };
 
-  const createCountry = (values: CountryReqEdit) => {
+  const createStateName = (values: StateNameReqEdit) => {
     setError("");
-    CountryApi.create(values)
+    StateNamesApi.create(values)
       .then((res) => {
         toast({
           title: "Success",
-          description: "Country created successfully.",
+          description: "State Name created successfully.",
           status: "success",
           position: "bottom-right",
         });
@@ -106,7 +114,7 @@ const CountryEdit = () => {
   const showUpdateForm = () => (
     <Box p={0}>
       <Formik
-        initialValues={country}
+        initialValues={stateName}
         onSubmit={(values) => {
           submitForm(values);
         }}
@@ -116,10 +124,24 @@ const CountryEdit = () => {
         {({ handleSubmit, errors, touched, setFieldValue }) => (
           <form onSubmit={handleSubmit}>
             <Stack spacing={4} as={Container} maxW={"3xl"}>
-              <FormControl isInvalid={!!errors.slug && touched.slug}>
-                <FormLabel fontSize={"sm"} htmlFor="slug">Slug</FormLabel>
-                <Field size={"sm"} as={Input} id="slug" name="slug" type="text" />
-                <FormErrorMessage>{errors.slug}</FormErrorMessage>
+              <FormControl isInvalid={!!errors.name && touched.name}>
+                <FormLabel fontSize={"sm"} htmlFor="name">Name</FormLabel>
+                <Field size={"sm"} as={Input} id="name" name="name" type="text" />
+                <Field size={"sm"} as={Input} id="stateId" name="stateId" type="hidden" />
+                <FormErrorMessage>{errors.name}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!errors.languageId && touched.languageId}>
+                <FormLabel size={"sm"} htmlFor="languageId">Language</FormLabel>
+                <Field size={"sm"} as={Input} id="languageId" name="languageId" type="hidden"
+                />
+                <LanguageDropdown
+                  selectedLanguage={selectedLanguage}
+                  handleChange={(newValue?: LanguageRes) => {
+                    setSelectedLanguage(newValue);
+                    setFieldValue("languageId", newValue?.languageId || "");
+                  }}
+                />
+                <FormErrorMessage>{errors.languageId}</FormErrorMessage>
               </FormControl>
               <Stack direction={"row"} spacing={6}>
                 <Button size={"sm"} type="submit" colorScheme={"blue"}>
@@ -158,4 +180,4 @@ const CountryEdit = () => {
   );
 }
 
-export default CountryEdit
+export default StateNameEdit

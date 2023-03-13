@@ -13,6 +13,7 @@ namespace data.Repository
         {
             var itemsToReturn = items
                 .Include(x => x.Country)
+                .Include(x => x.StateNames)
                 .AsQueryable();
 
             if (string.IsNullOrWhiteSpace(searchParams.SearchText) == false)

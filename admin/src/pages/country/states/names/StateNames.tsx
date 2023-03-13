@@ -19,36 +19,49 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { CountryApi } from "../../api/countryApi";
-import { CountryRes } from "../../dtos/Country";
 import {
   Link as RouteLink,
   useLocation,
+  useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
-import Common from "../../utility/Common";
-import UpdateIcon from "../../components/icons/UpdateIcon";
-import DeleteIcon from "../../components/icons/DeleteIcon";
-import PagedRes from "../../dtos/PagedRes";
-import TranslationIcon from "../../components/icons/TranslationIcon";
-import StateIcon from "../../components/icons/StateIcon";
+import Common from "../../../../utility/Common";
+import UpdateIcon from "../../../../components/icons/UpdateIcon";
+import DeleteIcon from "../../../../components/icons/DeleteIcon";
+import PagedRes from "../../../../dtos/PagedRes";
+import { StateRes } from "../../../../dtos/State";
+import { StateNameRes } from "../../../../dtos/StateName";
+import { StateApi } from "../../../../api/stateApi";
+import { StateNamesApi } from "../../../../api/stateNamesApi";
 
-const Countries = () => {
+const StateNames = () => {
+  const params = useParams();
+  const stateId = params.stateId;
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams(location.search);
   searchParams.set("pageSize", Common.DEFAULT_PAGE_SIZE.toString());
+  searchParams.set("stateId", stateId ?? "");
 
-  const [pagedRes, setPagedRes] = useState<PagedRes<CountryRes>>();
+  const [state, setState] = useState<StateRes>();
+  const [pagedRes, setPagedRes] = useState<PagedRes<StateNameRes>>();
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    searchCountries();
+    searchStateNames();
+    loadState();
   }, [searchParams]);
 
-  const searchCountries = () => {
+  const loadState = () => {
+    StateApi.get(stateId).then(res => {
+      setState(res);
+    })
+  }
+
+  const searchStateNames = () => {
     if (!searchParams) return;
-    CountryApi.search(Object.fromEntries(searchParams)).then((res) => {
+    StateNamesApi.search(Object.fromEntries(searchParams)).then((res) => {
       setPagedRes(res);
       // console.log(res)
     });
@@ -76,13 +89,17 @@ const Countries = () => {
   const showHeading = () => (
     <Flex>
       <Box>
-        <Heading fontSize={"lg"}>Country List</Heading>
+        <Heading fontSize={"lg"}>Names - {state?.slug + ", " + state?.country?.slug}</Heading>
       </Box>
       <Spacer />
       <Box>
-        <Link ml={2} as={RouteLink} to={"/countries/edit"}>
+        <Link ml={2} as={RouteLink} to={"/countries/" + state?.countryId
+         + "/states/" + stateId + "/names/edit"}>
           <Button colorScheme={"blue"} size={"sm"}>
-            Add Country
+            Add Name
+          </Button>
+          <Button ml={2} size={"sm"} type="button" colorScheme={"gray"} onClick={() => navigate(-1)}>
+            Back
           </Button>
         </Link>
       </Box>
@@ -123,50 +140,34 @@ const Countries = () => {
     </Flex>
   );
 
-  const showCountries = () => (
+  const showLanguages = () => (
     <TableContainer>
       <Table variant="simple" size={"sm"}>
         <Thead>
           <Tr>
-            <Th>Slug</Th>
-            <Th>Names</Th>
+            <Th>Name</Th>
+            <Th>Language</Th>
             <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
           {pagedRes?.pagedList?.map((item) => (
-            <Tr key={item.countryId}>
-              <Td>{item.slug}</Td>
-              <Td>{
-              item.countryNames?.map(n => (
-                n.name + " , "
-              ))
-              }</Td>
+            <Tr key={item.stateNameId}>
+              <Td>{item.name}</Td>
+              <Td>{item.language?.name}</Td>
               <Td>
                 <Link
                   mr={2}
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/names"}
-                >
-                  <TranslationIcon size="xs" fontSize="15" />
-                </Link>
-                <Link
-                  mr={2}
-                  as={RouteLink}
-                  to={"/countries/" + item.countryId + "/states"}
-                >
-                  <StateIcon size="xs" fontSize="15" />
-                </Link>
-                <Link
-                  mr={2}
-                  as={RouteLink}
-                  to={"/countries/" + item.countryId + "/edit/"}
+                  to={"/countries/" + state?.countryId
+                  + "/states/" + stateId + "/names/edit" + item.stateNameId}
                 >
                   <UpdateIcon size="xs" fontSize="15" />
                 </Link>
                 <Link
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/delete/"}
+                  to={"/countries/" + state?.countryId
+                  + "/states/" + stateId + "/names/delete" + item.stateNameId}
                 >
                   <DeleteIcon size="xs" fontSize="15" />
                 </Link>
@@ -207,10 +208,10 @@ const Countries = () => {
       <Stack spacing={4} as={Container} maxW={"3xl"}>
         {showHeading()}
         {displaySearchBar()}
-        {showCountries()}
+        {showLanguages()}
       </Stack>
     </Box>
   );
-};
+}
 
-export default Countries;
+export default StateNames

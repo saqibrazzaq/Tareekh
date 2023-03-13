@@ -6,14 +6,14 @@ namespace service.Services.Interfaces
 {
     public interface ICityService
     {
-        City? Get(int cityId);
-        City? GetBySlug(string slug);
-        City? Create(City city);
-        City? Update(int cityId, City city);
+        CityRes? Get(int cityId);
+        CityRes? GetBySlug(string slug);
+        CityRes? Create(CityReqEdit dto);
+        CityRes? Update(int cityId, CityReqEdit dto);
         void Delete(int cityId);
         int Count();
         int Count(int stateId);
-        ApiOkPagedResponse<IEnumerable<City>, MetaData>
+        ApiOkPagedResponse<IEnumerable<CityRes>, MetaData>
             Search(CityReqSearch dto);
     }
 }

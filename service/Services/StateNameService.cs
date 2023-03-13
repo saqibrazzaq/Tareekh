@@ -23,11 +23,12 @@ namespace service.Services
             _mapper = mapper;
         }
 
-        public StateName? Create(StateName stateName)
+        public StateNameRes? Create(StateNameReqEdit dto)
         {
-            _repositoryManager.StateNameRepository.Create(stateName);
+            var entity = _mapper.Map<StateName>(dto);
+            _repositoryManager.StateNameRepository.Create(entity);
             _repositoryManager.Save();
-            return stateName;
+            return _mapper.Map<StateNameRes>(entity);
         }
 
         public void Delete(int stateNameId)
@@ -37,9 +38,10 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public StateName? Get(int stateNameId)
+        public StateNameRes? Get(int stateNameId)
         {
-            return FindStateNameIfExists(stateNameId, false);
+            var entity = FindStateNameIfExists(stateNameId, false);
+            return _mapper.Map<StateNameRes>(entity);
         }
 
         private StateName? FindStateNameIfExists(int stateNameId, bool trackChanges)
@@ -53,19 +55,20 @@ namespace service.Services
             return entity;
         }
 
-        public StateName? Update(int stateNameId, StateName stateName)
+        public StateNameRes? Update(int stateNameId, StateNameReqEdit dto)
         {
             var entity = FindStateNameIfExists(stateNameId, true);
-            _mapper.Map(stateName, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<StateNameRes>(entity);
         }
 
-        public ApiOkPagedResponse<IEnumerable<StateName>, MetaData> Search(StateNameReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<StateNameRes>, MetaData> Search(StateNameReqSearch dto)
         {
             var pagedEntities = _repositoryManager.StateNameRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<StateName>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<StateNameRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<StateNameRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 

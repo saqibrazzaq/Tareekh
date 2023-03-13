@@ -37,7 +37,7 @@ namespace ui.Pages
 
         private void LoadCity()
         {
-            city = _cityService.GetBySlug(CityReq);
+            //city = _cityService.GetBySlug(CityReq);
         }
 
         private void UpdateCulture()

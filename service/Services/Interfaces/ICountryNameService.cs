@@ -11,12 +11,12 @@ namespace service.Services.Interfaces
 {
     public interface ICountryNameService
     {
-        CountryName? Get(int countryNameId);
-        CountryName? Create(CountryName countryName);
-        CountryName? Update(int countryNameId, CountryName countryName);
+        CountryNameRes? Get(int countryNameId);
+        CountryNameRes? Create(CountryNameReqEdit dto);
+        CountryNameRes? Update(int countryNameId, CountryNameReqEdit dto);
         void Delete(int countryNameId);
         int Count(int countryId);
-        ApiOkPagedResponse<IEnumerable<CountryName>, MetaData>
+        ApiOkPagedResponse<IEnumerable<CountryNameRes>, MetaData>
             Search(CountryNameReqSearch dto);
     }
 }

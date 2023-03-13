@@ -19,8 +19,6 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { CountryApi } from "../../api/countryApi";
-import { CountryRes } from "../../dtos/Country";
 import {
   Link as RouteLink,
   useLocation,
@@ -31,24 +29,24 @@ import Common from "../../utility/Common";
 import UpdateIcon from "../../components/icons/UpdateIcon";
 import DeleteIcon from "../../components/icons/DeleteIcon";
 import PagedRes from "../../dtos/PagedRes";
-import TranslationIcon from "../../components/icons/TranslationIcon";
-import StateIcon from "../../components/icons/StateIcon";
+import { TimezoneRes } from "../../dtos/Timezone";
+import { TimezoneApi } from "../../api/timezoneApi";
 
-const Countries = () => {
+const Timezones = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams(location.search);
   searchParams.set("pageSize", Common.DEFAULT_PAGE_SIZE.toString());
 
-  const [pagedRes, setPagedRes] = useState<PagedRes<CountryRes>>();
+  const [pagedRes, setPagedRes] = useState<PagedRes<TimezoneRes>>();
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    searchCountries();
+    searchTimezones();
   }, [searchParams]);
 
-  const searchCountries = () => {
+  const searchTimezones = () => {
     if (!searchParams) return;
-    CountryApi.search(Object.fromEntries(searchParams)).then((res) => {
+    TimezoneApi.search(Object.fromEntries(searchParams)).then((res) => {
       setPagedRes(res);
       // console.log(res)
     });
@@ -76,13 +74,13 @@ const Countries = () => {
   const showHeading = () => (
     <Flex>
       <Box>
-        <Heading fontSize={"lg"}>Country List</Heading>
+        <Heading fontSize={"lg"}>Timezone List</Heading>
       </Box>
       <Spacer />
       <Box>
-        <Link ml={2} as={RouteLink} to={"/countries/edit"}>
+        <Link ml={2} as={RouteLink} to={"/timezones/edit"}>
           <Button colorScheme={"blue"} size={"sm"}>
-            Add Country
+            Add Timezone
           </Button>
         </Link>
       </Box>
@@ -128,45 +126,27 @@ const Countries = () => {
       <Table variant="simple" size={"sm"}>
         <Thead>
           <Tr>
-            <Th>Slug</Th>
-            <Th>Names</Th>
+            <Th>Name</Th>
+            <Th>GMT Offset</Th>
             <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
           {pagedRes?.pagedList?.map((item) => (
-            <Tr key={item.countryId}>
-              <Td>{item.slug}</Td>
-              <Td>{
-              item.countryNames?.map(n => (
-                n.name + " , "
-              ))
-              }</Td>
+            <Tr key={item.timezoneId}>
+              <Td>{item.cityName}</Td>
+              <Td>{item.gmtOffsetName}</Td>
               <Td>
                 <Link
                   mr={2}
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/names"}
-                >
-                  <TranslationIcon size="xs" fontSize="15" />
-                </Link>
-                <Link
-                  mr={2}
-                  as={RouteLink}
-                  to={"/countries/" + item.countryId + "/states"}
-                >
-                  <StateIcon size="xs" fontSize="15" />
-                </Link>
-                <Link
-                  mr={2}
-                  as={RouteLink}
-                  to={"/countries/" + item.countryId + "/edit/"}
+                  to={"/timezones/" + item.timezoneId + "/edit/"}
                 >
                   <UpdateIcon size="xs" fontSize="15" />
                 </Link>
                 <Link
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/delete/"}
+                  to={"/timezones/" + item.timezoneId + "/delete/"}
                 >
                   <DeleteIcon size="xs" fontSize="15" />
                 </Link>
@@ -211,6 +191,6 @@ const Countries = () => {
       </Stack>
     </Box>
   );
-};
+}
 
-export default Countries;
+export default Timezones

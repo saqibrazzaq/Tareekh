@@ -22,6 +22,7 @@ import React, { useEffect, useState } from "react";
 import {
   Link as RouteLink,
   useLocation,
+  useNavigate,
   useParams,
   useSearchParams,
 } from "react-router-dom";
@@ -29,26 +30,27 @@ import Common from "../../../utility/Common";
 import UpdateIcon from "../../../components/icons/UpdateIcon";
 import DeleteIcon from "../../../components/icons/DeleteIcon";
 import PagedRes from "../../../dtos/PagedRes";
-import TranslationIcon from "../../../components/icons/TranslationIcon";
-import { CountryNameRes } from "../../../dtos/CountryName";
-import { CountryNamesApi } from "../../../api/countryNamesApi";
 import { CountryApi } from "../../../api/countryApi";
 import { CountryRes } from "../../../dtos/Country";
+import { StateRes } from "../../../dtos/State";
+import { StateApi } from "../../../api/stateApi";
+import TranslationIcon from "../../../components/icons/TranslationIcon";
 
-const CountryNames = () => {
+const States = () => {
   const params = useParams();
   const countryId = params.countryId;
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams(location.search);
   searchParams.set("pageSize", Common.DEFAULT_PAGE_SIZE.toString());
   searchParams.set("countryId", countryId ?? "");
 
   const [country, setCountry] = useState<CountryRes>();
-  const [pagedRes, setPagedRes] = useState<PagedRes<CountryNameRes>>();
+  const [pagedRes, setPagedRes] = useState<PagedRes<StateRes>>();
   const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
-    searchCountryNames();
+    searchStates();
     loadCountry();
   }, [searchParams]);
 
@@ -58,9 +60,9 @@ const CountryNames = () => {
     })
   }
 
-  const searchCountryNames = () => {
+  const searchStates = () => {
     if (!searchParams) return;
-    CountryNamesApi.search(Object.fromEntries(searchParams)).then((res) => {
+    StateApi.search(Object.fromEntries(searchParams)).then((res) => {
       setPagedRes(res);
       // console.log(res)
     });
@@ -88,13 +90,16 @@ const CountryNames = () => {
   const showHeading = () => (
     <Flex>
       <Box>
-        <Heading fontSize={"lg"}>Languages for {country?.slug}</Heading>
+        <Heading fontSize={"lg"}>States - {country?.slug}</Heading>
       </Box>
       <Spacer />
       <Box>
-        <Link ml={2} as={RouteLink} to={"/countries/" + countryId + "/languages/edit"}>
+        <Link ml={2} as={RouteLink} to={"/countries/" + countryId + "/states/edit"}>
           <Button colorScheme={"blue"} size={"sm"}>
-            Add Language
+            Add State
+          </Button>
+          <Button ml={2} size={"sm"} type="button" colorScheme={"gray"} onClick={() => navigate(-1)}>
+            Back
           </Button>
         </Link>
       </Box>
@@ -135,30 +140,41 @@ const CountryNames = () => {
     </Flex>
   );
 
-  const showLanguages = () => (
+  const showStates = () => (
     <TableContainer>
       <Table variant="simple" size={"sm"}>
         <Thead>
           <Tr>
             <Th>Slug</Th>
+            <Th>Names</Th>
             <Th></Th>
           </Tr>
         </Thead>
         <Tbody>
           {pagedRes?.pagedList?.map((item) => (
-            <Tr key={item.countryNameId}>
-              <Td>{item.name}</Td>
+            <Tr key={item.stateId}>
+              <Td>{item.slug}</Td>
+              <Td>{item.stateNames?.map(res => (
+                res.name + ", "
+              ))}</Td>
               <Td>
+              <Link
+                  mr={2}
+                  as={RouteLink}
+                  to={"/countries/" + item.countryId + "/states/" + item.stateId + "/names/"}
+                >
+                  <TranslationIcon size="xs" fontSize="15" />
+                </Link>
                 <Link
                   mr={2}
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/languages/" + item.countryNameId + "/edit/"}
+                  to={"/countries/" + item.countryId + "/states/" + item.stateId + "/edit/"}
                 >
                   <UpdateIcon size="xs" fontSize="15" />
                 </Link>
                 <Link
                   as={RouteLink}
-                  to={"/countries/" + item.countryId + "/languages/" + item.countryNameId + "/delete/"}
+                  to={"/countries/" + item.countryId + "/states/" + item.stateId + "/delete/"}
                 >
                   <DeleteIcon size="xs" fontSize="15" />
                 </Link>
@@ -199,10 +215,10 @@ const CountryNames = () => {
       <Stack spacing={4} as={Container} maxW={"3xl"}>
         {showHeading()}
         {displaySearchBar()}
-        {showLanguages()}
+        {showStates()}
       </Stack>
     </Box>
   );
 }
 
-export default CountryNames
+export default States

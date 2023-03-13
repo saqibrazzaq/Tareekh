@@ -6,14 +6,14 @@ namespace service.Services.Interfaces
 {
     public interface IStateService
     {
-        State? Get(int stateId);
-        State? GetBySlug(string slug);
-        State? Create(State state);
-        State? Update(int stateId, State state);
+        StateRes? Get(int stateId);
+        StateRes? GetBySlug(string slug);
+        StateRes? Create(StateReqEdit dto);
+        StateRes? Update(int stateId, StateReqEdit dto);
         void Delete(int stateId);
         int Count();
         int Count(int countryId);
-        ApiOkPagedResponse<IEnumerable<State>, MetaData>
+        ApiOkPagedResponse<IEnumerable<StateRes>, MetaData>
             Search(StateReqSearch dto);
     }
 }

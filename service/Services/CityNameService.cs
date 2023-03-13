@@ -23,11 +23,12 @@ namespace service.Services
             _mapper = mapper;
         }
 
-        public CityName? Create(CityName cityName)
+        public CityNameRes? Create(CityNameReqEdit dto)
         {
-            _repositoryManager.CityNameRepository.Create(cityName);
+            var entity = _mapper.Map<CityName>(dto);
+            _repositoryManager.CityNameRepository.Create(entity);
             _repositoryManager.Save();
-            return cityName;
+            return _mapper.Map<CityNameRes>(entity);
         }
 
         public void Delete(int cityNameId)
@@ -37,9 +38,10 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public CityName? Get(int cityNameId)
+        public CityNameRes? Get(int cityNameId)
         {
-            return FindCityNameIfExists(cityNameId, false);
+            var entity = FindCityNameIfExists(cityNameId, false);
+            return _mapper.Map<CityNameRes>(entity);
         }
 
         private CityName? FindCityNameIfExists(int cityNameId, bool trackChanges)
@@ -53,19 +55,20 @@ namespace service.Services
             return entity;
         }
 
-        public CityName? Update(int cityNameId, CityName cityName)
+        public CityNameRes? Update(int cityNameId, CityNameReqEdit dto)
         {
             var entity = FindCityNameIfExists(cityNameId, true);
-            _mapper.Map(cityName, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return cityName;
+            return _mapper.Map<CityNameRes>(entity);
         }
 
-        public ApiOkPagedResponse<IEnumerable<CityName>, MetaData> Search(CityNameReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<CityNameRes>, MetaData> Search(CityNameReqSearch dto)
         {
             var pagedEntities = _repositoryManager.CityNameRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<CityName>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<CityNameRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<CityNameRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 

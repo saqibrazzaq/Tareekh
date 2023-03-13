@@ -1,6 +1,7 @@
 ﻿using dto.dtos;
 using dto.Paging;
 using entity.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace data.Repository
             CountryNameReqSearch searchParams)
         {
             var itemsToReturn = items
-                //.Include(x => x.State.Country)
+                .Include(x => x.Language)
                 .AsQueryable();
 
             if (string.IsNullOrWhiteSpace(searchParams.SearchText) == false)

@@ -3,6 +3,7 @@ using data.Repository.Interfaces;
 using dto.dtos;
 using dto.Paging;
 using entity.Entities;
+using Microsoft.EntityFrameworkCore;
 using service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,12 @@ namespace service.Services
             _mapper = mapper;
         }
 
-        public CountryName? Create(CountryName countryName)
+        public CountryNameRes? Create(CountryNameReqEdit dto)
         {
-            _repositoryManager.CountryNameRepository.Create(countryName);
+            var entity = _mapper.Map<CountryName>(dto);
+            _repositoryManager.CountryNameRepository.Create(entity);
             _repositoryManager.Save();
-            return countryName;
+            return _mapper.Map<CountryNameRes>(entity);
         }
 
         public void Delete(int countryNameId)
@@ -37,35 +39,38 @@ namespace service.Services
             _repositoryManager.Save();
         }
 
-        public CountryName? Get(int countryNameId)
+        public CountryNameRes? Get(int countryNameId)
         {
-            return FindCountryNameIfExists(countryNameId, false);
+            var entity = FindCountryNameIfExists(countryNameId, false);
+            return _mapper.Map<CountryNameRes>(entity);
         }
 
         private CountryName? FindCountryNameIfExists(int countryNameId, bool trackChanges)
         {
             var entity = _repositoryManager.CountryNameRepository.FindByCondition(
                 x => x.CountryNameId == countryNameId,
-                trackChanges)
+                trackChanges,
+                include: i => i.Include(x => x.Language))
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No Country Name found with id " + countryNameId); }
 
             return entity;
         }
 
-        public CountryName? Update(int countryNameId, CountryName countryName)
+        public CountryNameRes? Update(int countryNameId, CountryNameReqEdit dto)
         {
             var entity = FindCountryNameIfExists(countryNameId, true);
-            _mapper.Map(countryName, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<CountryNameRes>(entity);
         }
 
-        public ApiOkPagedResponse<IEnumerable<CountryName>, MetaData> Search(CountryNameReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<CountryNameRes>, MetaData> Search(CountryNameReqSearch dto)
         {
             var pagedEntities = _repositoryManager.CountryNameRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<CountryName>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<CountryNameRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<CountryNameRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 

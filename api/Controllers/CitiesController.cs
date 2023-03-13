@@ -29,18 +29,14 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] CityReqSearch dto)
         {
-            var result = _cityService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<CityRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<CityRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _cityService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{cityId}")]
         public IActionResult Get(int cityId)
         {
-            var result = _cityService.Get(cityId);
-            var res = _mapper.Map<CityRes>(result);
+            var res = _cityService.Get(cityId);
             return Ok(res);
         }
 
@@ -61,26 +57,21 @@ namespace api.Controllers
         [HttpGet("slug/{slug}")]
         public IActionResult GetBySlug(string slug)
         {
-            var result = _cityService.GetBySlug(slug);
-            var res = _mapper.Map<CityRes>(result);
+            var res = _cityService.GetBySlug(slug);
             return Ok(res);
         }
 
         [HttpPost]
         public IActionResult Create(CityReqEdit dto)
         {
-            var entity = _mapper.Map<City>(dto);
-            var result = _cityService.Create(entity);
-            var res = _mapper.Map<CityRes>(result);
+            var res = _cityService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{cityId}")]
         public IActionResult Update(int cityId, CityReqEdit dto)
         {
-            var entity = _mapper.Map<City>(dto);
-            var result = _cityService.Update(cityId, entity);
-            var res = _mapper.Map<CityRes>(result);
+            var res = _cityService.Update(cityId, dto);
             return Ok(res);
         }
 

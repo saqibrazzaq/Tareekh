@@ -30,18 +30,14 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] TimezoneReqSearch dto)
         {
-            var result = _timezoneService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<TimezoneRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<TimezoneRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _timezoneService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{timezoneId}")]
         public IActionResult Get(int timezoneId)
         {
-            var result = _timezoneService.Get(timezoneId);
-            var res = _mapper.Map<TimezoneRes>(result);
+            var res = _timezoneService.Get(timezoneId);
             return Ok(res);
         }
 
@@ -55,18 +51,14 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Create(TimezoneReqEdit dto)
         {
-            var entity = _mapper.Map<Timezone>(dto);
-            var result = _timezoneService.Create(entity);
-            var res = _mapper.Map<TimezoneRes>(result);
+            var res = _timezoneService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{timezoneId}")]
         public IActionResult Update(int timezoneId, TimezoneReqEdit dto)
         {
-            var entity = _mapper.Map<Timezone>(dto);
-            var result = _timezoneService.Update(timezoneId, entity);
-            var res = _mapper.Map<TimezoneRes>(result);
+            var res = _timezoneService.Update(timezoneId, dto);
             return Ok(res);
         }
 

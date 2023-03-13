@@ -11,12 +11,12 @@ namespace service.Services.Interfaces
 {
     public interface ITimezoneService
     {
-        Timezone? Get(int timezoneId);
-        Timezone? Create(Timezone timezone);
-        Timezone? Update(int timezoneId, Timezone timezone);
+        TimezoneRes? Get(int timezoneId);
+        TimezoneRes? Create(TimezoneReqEdit dto);
+        TimezoneRes? Update(int timezoneId, TimezoneReqEdit dto);
         void Delete(int timezoneId);
         int Count();
-        ApiOkPagedResponse<IEnumerable<Timezone>, MetaData>
+        ApiOkPagedResponse<IEnumerable<TimezoneRes>, MetaData>
             Search(TimezoneReqSearch dto);
     }
 }

@@ -33,9 +33,10 @@ namespace service.Services
                 .Count();
         }
 
-        public City? Get(int cityId)
+        public CityRes? Get(int cityId)
         {
-            return FindCityIfExists(cityId, false);
+            var entity = FindCityIfExists(cityId, false);
+            return _mapper.Map<CityRes>(entity);
         }
 
         private City? FindCityIfExists(int cityId, bool trackChanges)
@@ -49,7 +50,7 @@ namespace service.Services
             return entity;
         }
 
-        public City? GetBySlug(string slug)
+        public CityRes? GetBySlug(string slug)
         {
             if (string.IsNullOrWhiteSpace(slug)) return null;
 
@@ -60,30 +61,32 @@ namespace service.Services
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No city found with slug " + slug); }
 
-            return entity;
+            return _mapper.Map<CityRes>(entity);
         }
 
-        public ApiOkPagedResponse<IEnumerable<City>, MetaData> Search(CityReqSearch dto)
+        public ApiOkPagedResponse<IEnumerable<CityRes>, MetaData> Search(CityReqSearch dto)
         {
             var pagedEntities = _repositoryManager.CityRepository.
                 Search(dto, false);
-            return new ApiOkPagedResponse<IEnumerable<City>, MetaData>(pagedEntities,
+            var dtos = _mapper.Map<IEnumerable<CityRes>>(pagedEntities);
+            return new ApiOkPagedResponse<IEnumerable<CityRes>, MetaData>(dtos,
                 pagedEntities.MetaData);
         }
 
-        public City? Create(City city)
+        public CityRes? Create(CityReqEdit dto)
         {
-            _repositoryManager.CityRepository.Create(city);
+            var entity = _mapper.Map<City>(dto);
+            _repositoryManager.CityRepository.Create(entity);
             _repositoryManager.Save();
-            return city;
+            return _mapper.Map<CityRes>(entity);
         }
 
-        public City? Update(int cityId, City city)
+        public CityRes? Update(int cityId, CityReqEdit dto)
         {
             var entity = FindCityIfExists(cityId, true);
-            _mapper.Map(city, entity);
+            _mapper.Map(dto, entity);
             _repositoryManager.Save();
-            return entity;
+            return _mapper.Map<CityRes>(entity);
         }
 
         public void Delete(int cityId)

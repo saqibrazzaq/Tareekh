@@ -11,12 +11,12 @@ namespace service.Services.Interfaces
 {
     public interface ILanguageService
     {
-        Language? Get(int languageId);
-        Language? Create(Language language);
-        Language? Update(int languageId, Language language);
+        LanguageRes? Get(int languageId);
+        LanguageRes? Create(LanguageReqEdit dto);
+        LanguageRes? Update(int languageId, LanguageReqEdit dto);
         void Delete(int languageId);
         int Count();
-        ApiOkPagedResponse<IEnumerable<Language>, MetaData>
+        ApiOkPagedResponse<IEnumerable<LanguageRes>, MetaData>
             Search(LanguageReqSearch dto);
     }
 }

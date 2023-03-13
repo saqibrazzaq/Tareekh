@@ -30,26 +30,21 @@ namespace api.Controllers
         [HttpGet("search")]
         public IActionResult Search([FromQuery] StateReqSearch dto)
         {
-            var result = _stateService.Search(dto);
-            var dtos = _mapper.Map<IEnumerable<StateRes>>(result.PagedList);
-            var res = new ApiOkPagedResponse<IEnumerable<StateRes>, MetaData>(dtos,
-                result.MetaData);
+            var res = _stateService.Search(dto);
             return Ok(res);
         }
 
         [HttpGet("{stateId}")]
         public IActionResult Get(int stateId)
         {
-            var result = _stateService.Get(stateId);
-            var res = _mapper.Map<StateRes>(result);
+            var res = _stateService.Get(stateId);
             return Ok(res);
         }
 
         [HttpGet("slug/{slug}")]
         public IActionResult GetBySlug(string slug)
         {
-            var result = _stateService.GetBySlug(slug);
-            var res = _mapper.Map<StateRes>(result);
+            var res = _stateService.GetBySlug(slug);
             return Ok(res);
         }
 
@@ -70,18 +65,14 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Create(StateReqEdit dto)
         {
-            var entity = _mapper.Map<State>(dto);
-            var result = _stateService.Create(entity);
-            var res = _mapper.Map<StateRes>(result);
+            var res = _stateService.Create(dto);
             return Ok(res);
         }
 
         [HttpPut("{stateId}")]
         public IActionResult Update(int stateId, StateReqEdit dto)
         {
-            var entity = _mapper.Map<State>(dto);
-            var result = _stateService.Update(stateId, entity);
-            var res = _mapper.Map<StateRes>(result);
+            var res = _stateService.Update(stateId, dto);
             return Ok(res);
         }
 
