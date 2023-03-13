@@ -29,6 +29,15 @@ export const CountryNamesApi = {
 
     return response.data
   },
+  anyByLanguage: async function (languageId?: string) {
+    if (!languageId) return {};
+    const response = await api.request({
+      url: `/countryNames/anyByLanguage/` + languageId,
+      method: "GET",
+    })
+
+    return response.data
+  },
   create: async function (country: CountryNameReqEdit) {
     const response = await api.request({
       url: `/countryNames`,

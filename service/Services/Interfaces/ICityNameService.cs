@@ -16,6 +16,8 @@ namespace service.Services.Interfaces
         CityNameRes? Update(int cityNameId, CityNameReqEdit dto);
         void Delete(int cityNameId);
         int Count(int cityId);
+        bool AnyByLanguage(int languageId);
+        int CountByLanguage(int languageId);
         ApiOkPagedResponse<IEnumerable<CityNameRes>, MetaData>
             Search(CityNameReqSearch dto);
     }

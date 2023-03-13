@@ -12,11 +12,14 @@ namespace service.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public CityService(IRepositoryManager repositoryManager, 
-            IMapper mapper)
+        private readonly ICityNameService _cityNameService;
+        public CityService(IRepositoryManager repositoryManager,
+            IMapper mapper,
+            ICityNameService cityNameService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _cityNameService = cityNameService;
         }
 
         public int Count()
@@ -94,9 +97,34 @@ namespace service.Services
 
         public void Delete(int cityId)
         {
+            ValidateForDelete(cityId);
+
             var entity = FindCityIfExists(cityId, true);
             _repositoryManager.CityRepository.Delete(entity);
             _repositoryManager.Save();
+        }
+
+        private void ValidateForDelete(int cityId)
+        {
+            var cityNameCount =  _cityNameService.Count(cityId);
+            if (cityNameCount > 0)
+                throw new Exception(string.Format("Cannot delete city, it has {0} names.", cityNameCount));
+        }
+
+        public bool AnyByTimezone(int timezoneId)
+        {
+            return _repositoryManager.CityRepository.FindByCondition(
+                x => x.TimezoneId == timezoneId,
+                false)
+                .Any();
+        }
+
+        public int CountByTimezone(int timezoneId)
+        {
+            return _repositoryManager.CityRepository.FindByCondition(
+                x => x.TimezoneId == timezoneId,
+                false)
+                .Count();
         }
     }
 }

@@ -29,6 +29,15 @@ export const StateNamesApi = {
 
     return response.data
   },
+  anyByLanguage: async function (languageId?: string) {
+    if (!languageId) return {};
+    const response = await api.request({
+      url: `/stateNames/anyByLanguage/` + languageId,
+      method: "GET",
+    })
+
+    return response.data
+  },
   create: async function (city: StateNameReqEdit) {
     const response = await api.request({
       url: `/stateNames`,

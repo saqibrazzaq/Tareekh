@@ -37,10 +37,19 @@ export const CityApi = {
 
     return response.data
   },
-  countByStateId: async function (stateId?: string) {
+  countByState: async function (stateId?: string) {
     if (!stateId) return {};
     const response = await api.request({
       url: `/cities/count/` + stateId,
+      method: "GET",
+    })
+
+    return response.data
+  },
+  anyByTimezone: async function (timezoneId?: string) {
+    if (!timezoneId) return {};
+    const response = await api.request({
+      url: `/cities/anyByTimezone/` + timezoneId,
       method: "GET",
     })
 

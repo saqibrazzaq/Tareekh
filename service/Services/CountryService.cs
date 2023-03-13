@@ -11,11 +11,17 @@ namespace service.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public CountryService(IRepositoryManager repositoryManager, 
-            IMapper mapper)
+        private readonly IStateService _stateService;
+        private readonly ICountryNameService _countryNameService;
+        public CountryService(IRepositoryManager repositoryManager,
+            IMapper mapper,
+            IStateService stateService,
+            ICountryNameService countryNameService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _stateService = stateService;
+            _countryNameService = countryNameService;
         }
 
         public int Count()
@@ -34,9 +40,22 @@ namespace service.Services
 
         public void Delete(int countryId)
         {
+            ValidateForDelete(countryId);
+
             var entity = FindCountryIfExists(countryId, true);
             _repositoryManager.CountryRepository.Delete(entity);
             _repositoryManager.Save();
+        }
+
+        private void ValidateForDelete(int countryId)
+        {
+            var stateCount = _stateService.CountByCountry(countryId);
+            if (stateCount > 0)
+                throw new Exception(string.Format("Cannot delete Country, it has {0} states.", stateCount));
+
+            var countryNameCount = _countryNameService.Count(countryId);
+            if (countryNameCount > 0)
+                throw new Exception(string.Format("Cannot delete Country, it has {0} names.", countryNameCount));
         }
 
         public CountryRes? Get(int countryId)
@@ -82,6 +101,12 @@ namespace service.Services
             _mapper.Map(dto, entity);
             _repositoryManager.Save();
             return _mapper.Map<CountryRes>(entity);
+        }
+
+        public bool Any()
+        {
+            return _repositoryManager.CountryRepository.FindAll(false)
+                .Any();
         }
     }
 }

@@ -12,7 +12,8 @@ namespace service.Services.Interfaces
         StateRes? Update(int stateId, StateReqEdit dto);
         void Delete(int stateId);
         int Count();
-        int Count(int countryId);
+        int CountByCountry(int countryId);
+        bool AnyByCountry(int countryId);
         ApiOkPagedResponse<IEnumerable<StateRes>, MetaData>
             Search(StateReqSearch dto);
     }

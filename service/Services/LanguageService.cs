@@ -16,11 +16,20 @@ namespace service.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public LanguageService(IRepositoryManager repositoryManager, 
-            IMapper mapper)
+        private readonly ICountryNameService _countryNameService;
+        private readonly IStateNameService _stateNameService;
+        private readonly ICityNameService _cityNameService;
+        public LanguageService(IRepositoryManager repositoryManager,
+            IMapper mapper,
+            ICountryNameService countryNameService,
+            IStateNameService stateNameService,
+            ICityNameService cityNameService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _countryNameService = countryNameService;
+            _stateNameService = stateNameService;
+            _cityNameService = cityNameService;
         }
 
         public int Count()
@@ -39,9 +48,26 @@ namespace service.Services
 
         public void Delete(int languageId)
         {
+            ValidateForDelete(languageId);
+
             var entity = FindLanguageIfExists(languageId, true);
             _repositoryManager.LanguageRepository.Delete(entity);
             _repositoryManager.Save();
+        }
+
+        private void ValidateForDelete(int languageId)
+        {
+            var anyCountryName = _countryNameService.AnyByLanguage(languageId);
+            if (anyCountryName)
+                throw new Exception("Cannot delete Language, it has countries.");
+
+            var anyStateName = _stateNameService.AnyByLanguage(languageId);
+            if (anyStateName)
+                throw new Exception("Cannot delete Language, it has states.");
+
+            var anyCityName = _cityNameService.AnyByLanguage(languageId);
+            if (anyCityName)
+                throw new Exception("Cannot delete Language, it has cities.");
         }
 
         public LanguageRes? Get(int languageId)

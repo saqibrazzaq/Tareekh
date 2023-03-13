@@ -13,6 +13,8 @@ namespace service.Services.Interfaces
         void Delete(int cityId);
         int Count();
         int Count(int stateId);
+        bool AnyByTimezone(int timezoneId);
+        int CountByTimezone(int timezoneId);
         ApiOkPagedResponse<IEnumerable<CityRes>, MetaData>
             Search(CityReqSearch dto);
     }

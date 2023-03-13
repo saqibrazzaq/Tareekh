@@ -12,11 +12,17 @@ namespace service.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public StateService(IRepositoryManager repositoryManager, 
-            IMapper mapper)
+        private readonly ICityService _cityService;
+        private readonly IStateNameService _stateNameService;
+        public StateService(IRepositoryManager repositoryManager,
+            IMapper mapper,
+            ICityService cityService,
+            IStateNameService stateNameService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _cityService = cityService;
+            _stateNameService = stateNameService;
         }
 
         public int Count()
@@ -25,7 +31,7 @@ namespace service.Services
                 .Count();
         }
 
-        public int Count(int countryId)
+        public int CountByCountry(int countryId)
         {
             return _repositoryManager.StateRepository.FindByCondition(
                 x => x.CountryId == countryId,
@@ -43,9 +49,22 @@ namespace service.Services
 
         public void Delete(int stateId)
         {
+            ValidateForDelete(stateId);
+
             var entity = FindStateIfExists(stateId, true);
             _repositoryManager.StateRepository.Delete(entity);
             _repositoryManager.Save();
+        }
+
+        private void ValidateForDelete(int stateId)
+        {
+            var cityCount = _cityService.Count(stateId);
+            if (cityCount > 0)
+                throw new Exception(string.Format("Cannot delete State, it has {0} cities.", cityCount));
+
+            var stateNameCount = _stateNameService.Count(stateId);
+            if (stateNameCount > 0)
+                throw new Exception(string.Format("Cannot delete state, it has {0} names.", stateNameCount));
         }
 
         public StateRes? Get(int stateId)
@@ -93,6 +112,14 @@ namespace service.Services
             _mapper.Map(dto, entity);
             _repositoryManager.Save();
             return _mapper.Map<StateRes>(entity);
+        }
+
+        public bool AnyByCountry(int countryId)
+        {
+            return _repositoryManager.StateRepository.FindByCondition(
+                x => x.CountryId == countryId,
+                false)
+                .Any();
         }
     }
 }

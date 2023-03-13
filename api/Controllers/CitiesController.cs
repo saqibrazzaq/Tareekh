@@ -54,6 +54,13 @@ namespace api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("anyByTimezone/{timezoneId}")]
+        public IActionResult CountByTimezone(int timezoneId)
+        {
+            var result = _cityService.AnyByTimezone(timezoneId);
+            return Ok(result);
+        }
+
         [HttpGet("slug/{slug}")]
         public IActionResult GetBySlug(string slug)
         {

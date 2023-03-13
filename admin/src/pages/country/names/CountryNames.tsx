@@ -97,10 +97,10 @@ const CountryNames = () => {
           <Button colorScheme={"blue"} size={"sm"}>
             Add Name
           </Button>
-          <Button ml={2} size={"sm"} type="button" colorScheme={"gray"} onClick={() => navigate(-1)}>
-            Back
-          </Button>
         </Link>
+        <Button ml={2} size={"sm"} type="button" colorScheme={"gray"} onClick={() => navigate(-1)}>
+          Back
+        </Button>
       </Box>
     </Flex>
   );

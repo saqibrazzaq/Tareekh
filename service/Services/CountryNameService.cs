@@ -50,7 +50,10 @@ namespace service.Services
             var entity = _repositoryManager.CountryNameRepository.FindByCondition(
                 x => x.CountryNameId == countryNameId,
                 trackChanges,
-                include: i => i.Include(x => x.Language))
+                include: i => i
+                    .Include(x => x.Language)
+                    .Include(x => x.Country)
+                    )
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No Country Name found with id " + countryNameId); }
 
@@ -78,6 +81,22 @@ namespace service.Services
         {
             return _repositoryManager.CountryNameRepository.FindByCondition(
                 x => x.CountryId == countryId,
+                false)
+                .Count();
+        }
+
+        public bool AnyByLanguage(int languageId)
+        {
+            return _repositoryManager.CountryNameRepository.FindByCondition(
+                x => x.LanguageId == languageId,
+                false)
+                .Any();
+        }
+
+        public int CountByLanguage(int languageId)
+        {
+            return _repositoryManager.CountryNameRepository.FindByCondition(
+                x => x.LanguageId == languageId,
                 false)
                 .Count();
         }

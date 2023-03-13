@@ -3,6 +3,7 @@ using data.Repository.Interfaces;
 using dto.dtos;
 using dto.Paging;
 using entity.Entities;
+using Microsoft.EntityFrameworkCore;
 using service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,11 @@ namespace service.Services
         {
             var entity = _repositoryManager.StateNameRepository.FindByCondition(
                 x => x.StateNameId == stateNameId,
-                trackChanges)
+                trackChanges,
+                include: i => i
+                    .Include(x => x.Language)
+                    .Include(x => x.State.Country)
+                    )
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No State Name found with id " + stateNameId); }
 
@@ -76,6 +81,22 @@ namespace service.Services
         {
             return _repositoryManager.StateNameRepository.FindByCondition(
                 x => x.StateId == stateId,
+                false)
+                .Count();
+        }
+
+        public bool AnyByLanguage(int languageId)
+        {
+            return _repositoryManager.StateNameRepository.FindByCondition(
+                x => x.LanguageId == languageId,
+                false)
+                .Any();
+        }
+
+        public int CountByLanguage(int languageId)
+        {
+            return _repositoryManager.StateNameRepository.FindByCondition(
+                x => x.LanguageId == languageId,
                 false)
                 .Count();
         }

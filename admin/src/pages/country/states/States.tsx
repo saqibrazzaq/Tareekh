@@ -99,10 +99,10 @@ const States = () => {
           <Button colorScheme={"blue"} size={"sm"}>
             Add State
           </Button>
-          <Button ml={2} size={"sm"} type="button" colorScheme={"gray"} onClick={() => navigate(-1)}>
-            Back
-          </Button>
         </Link>
+        <Button ml={2} size={"sm"} type="button" colorScheme={"gray"} onClick={() => navigate(-1)}>
+          Back
+        </Button>
       </Box>
     </Flex>
   );

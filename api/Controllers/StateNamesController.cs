@@ -48,6 +48,13 @@ namespace api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("anyByLanguage/{languageId}")]
+        public IActionResult AnyByLanguage(int languageId)
+        {
+            var result = _stateNameService.AnyByLanguage(languageId);
+            return Ok(result);
+        }
+
         [HttpPost]
         public IActionResult Create(StateNameReqEdit dto)
         {

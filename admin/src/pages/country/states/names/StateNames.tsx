@@ -160,14 +160,14 @@ const StateNames = () => {
                   mr={2}
                   as={RouteLink}
                   to={"/countries/" + state?.countryId
-                  + "/states/" + stateId + "/names/edit" + item.stateNameId}
+                  + "/states/" + stateId + "/names/" + item.stateNameId + "/edit"}
                 >
                   <UpdateIcon size="xs" fontSize="15" />
                 </Link>
                 <Link
                   as={RouteLink}
                   to={"/countries/" + state?.countryId
-                  + "/states/" + stateId + "/names/delete" + item.stateNameId}
+                  + "/states/" + stateId + "/names/" + item.stateNameId + "/delete"}
                 >
                   <DeleteIcon size="xs" fontSize="15" />
                 </Link>

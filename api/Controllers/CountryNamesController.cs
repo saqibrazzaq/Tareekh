@@ -48,6 +48,13 @@ namespace api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("anyByLanguage/{languageId}")]
+        public IActionResult AnyByLanguage(int languageId)
+        {
+            var result = _countryNameService.AnyByLanguage(languageId);
+            return Ok(result);
+        }
+
         [HttpPost]
         public IActionResult Create(CountryNameReqEdit dto)
         {
@@ -63,9 +70,9 @@ namespace api.Controllers
         }
 
         [HttpDelete("{countryNameId}")]
-        public IActionResult Delete(int countryId)
+        public IActionResult Delete(int countryNameId)
         {
-            _countryNameService.Delete(countryId);
+            _countryNameService.Delete(countryNameId);
             return NoContent();
         }
     }

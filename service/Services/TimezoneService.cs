@@ -16,11 +16,14 @@ namespace service.Services
     {
         private readonly IRepositoryManager _repositoryManager;
         private readonly IMapper _mapper;
-        public TimezoneService(IRepositoryManager repositoryManager, 
-            IMapper mapper)
+        private readonly ICityService _cityService;
+        public TimezoneService(IRepositoryManager repositoryManager,
+            IMapper mapper,
+            ICityService cityService)
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
+            _cityService = cityService;
         }
 
         public int Count()
@@ -39,9 +42,18 @@ namespace service.Services
 
         public void Delete(int timezoneId)
         {
+            ValidateForDelete(timezoneId);
+
             var entity = FindTimezoneIfExists(timezoneId, true);
             _repositoryManager.TimezoneRepository.Delete(entity);
             _repositoryManager.Save();
+        }
+
+        private void ValidateForDelete(int timezoneId)
+        {
+            var anyCityByTimezone = _cityService.AnyByTimezone(timezoneId);
+            if (anyCityByTimezone)
+                throw new Exception("Cannot delete timezone, it is used in cities.");
         }
 
         public TimezoneRes? Get(int timezoneId)

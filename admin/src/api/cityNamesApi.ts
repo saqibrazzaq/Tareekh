@@ -20,10 +20,19 @@ export const CityNamesApi = {
 
     return response.data
   },
-  count: async function (cityId?: string) {
-    if (!cityId) return {};
+  count: async function (stateId?: string) {
+    if (!stateId) return {};
     const response = await api.request({
-      url: `/cityNames/count/` + cityId,
+      url: `/cityNames/count/` + stateId,
+      method: "GET",
+    })
+
+    return response.data
+  },
+  anyByLanguage: async function (languageId?: string) {
+    if (!languageId) return {};
+    const response = await api.request({
+      url: `/cityNames/anyByLanguage/` + languageId,
       method: "GET",
     })
 

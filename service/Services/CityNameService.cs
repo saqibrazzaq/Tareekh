@@ -50,7 +50,10 @@ namespace service.Services
             var entity = _repositoryManager.CityNameRepository.FindByCondition(
                 x => x.CityNameId == cityNameId,
                 trackChanges,
-                include: i => i.Include(x => x.Language))
+                include: i => i
+                    .Include(x => x.Language)
+                    .Include(x => x.City.State.Country)
+                    )
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No City Name found with id " + cityNameId); }
 
@@ -76,7 +79,25 @@ namespace service.Services
 
         public int Count(int cityId)
         {
-            return _repositoryManager.CityNameRepository.FindAll(false)
+            return _repositoryManager.CityNameRepository.FindByCondition(
+                x => x.CityId == cityId,
+                false)
+                .Count();
+        }
+
+        public bool AnyByLanguage(int languageId)
+        {
+            return _repositoryManager.CityNameRepository.FindByCondition(
+                x => x.LanguageId == languageId,
+                false)
+                .Any();
+        }
+
+        public int CountByLanguage(int languageId)
+        {
+            return _repositoryManager.CityNameRepository.FindByCondition(
+                x => x.LanguageId == languageId,
+                false)
                 .Count();
         }
     }
