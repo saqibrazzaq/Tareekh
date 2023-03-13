@@ -43,7 +43,10 @@ namespace service.Services
         {
             var entity = _repositoryManager.CityRepository.FindByCondition(
                 x => x.CityId == cityId,
-                trackChanges)
+                trackChanges,
+                include: i => i
+                    .Include(x => x.Timezone)
+                    .Include(x => x.State.Country))
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No City found with id " + cityId); }
 

@@ -3,6 +3,7 @@ using data.Repository.Interfaces;
 using dto.dtos;
 using dto.Paging;
 using entity.Entities;
+using Microsoft.EntityFrameworkCore;
 using service.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,8 @@ namespace service.Services
         {
             var entity = _repositoryManager.CityNameRepository.FindByCondition(
                 x => x.CityNameId == cityNameId,
-                trackChanges)
+                trackChanges,
+                include: i => i.Include(x => x.Language))
                 .FirstOrDefault();
             if (entity == null) { throw new Exception("No City Name found with id " + cityNameId); }
 

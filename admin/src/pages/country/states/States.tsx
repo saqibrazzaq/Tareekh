@@ -35,6 +35,7 @@ import { CountryRes } from "../../../dtos/Country";
 import { StateRes } from "../../../dtos/State";
 import { StateApi } from "../../../api/stateApi";
 import TranslationIcon from "../../../components/icons/TranslationIcon";
+import CityIcon from "../../../components/icons/CityIcon";
 
 const States = () => {
   const params = useParams();
@@ -154,8 +155,8 @@ const States = () => {
           {pagedRes?.pagedList?.map((item) => (
             <Tr key={item.stateId}>
               <Td>{item.slug}</Td>
-              <Td>{item.stateNames?.map(res => (
-                res.name + ", "
+              <Td>{item.stateNames?.map(stateName => (
+                stateName.name + ", "
               ))}</Td>
               <Td>
               <Link
@@ -164,6 +165,13 @@ const States = () => {
                   to={"/countries/" + item.countryId + "/states/" + item.stateId + "/names/"}
                 >
                   <TranslationIcon size="xs" fontSize="15" />
+                </Link>
+                <Link
+                  mr={2}
+                  as={RouteLink}
+                  to={"/countries/" + item.countryId + "/states/" + item.stateId + "/cities/"}
+                >
+                  <CityIcon size="xs" fontSize="15" />
                 </Link>
                 <Link
                   mr={2}

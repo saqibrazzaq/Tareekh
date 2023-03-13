@@ -6,6 +6,12 @@ import CountryEdit from "./pages/country/CountryEdit";
 import CountryNames from "./pages/country/names/CountryNames";
 import CountryNamesDelete from "./pages/country/names/CountryNamesDelete";
 import CountryNamesEdit from "./pages/country/names/CountryNamesEdit";
+import Cities from "./pages/country/states/cities/Cities";
+import CityDelete from "./pages/country/states/cities/CityDelete";
+import CityEdit from "./pages/country/states/cities/CityEdit";
+import CityNameDelete from "./pages/country/states/cities/names/CityNameDelete";
+import CityNameEdit from "./pages/country/states/cities/names/CityNameEdit";
+import CityNames from "./pages/country/states/cities/names/CityNames";
 import StateNameDelete from "./pages/country/states/names/StateNameDelete";
 import StateNameEdit from "./pages/country/states/names/StateNameEdit";
 import StateNames from "./pages/country/states/names/StateNames";
@@ -54,6 +60,22 @@ function App() {
                     <Route path=":stateNameId">
                       <Route path="edit" element={<StateNameEdit />} />
                       <Route path="delete" element={<StateNameDelete />} />
+                    </Route>
+                  </Route>
+                  {/* Cities */}
+                  <Route path="cities">
+                    <Route index element={<Cities />} />
+                    <Route path="edit" element={<CityEdit />} />
+                    <Route path=":cityId">
+                      <Route path="edit" element={<CityEdit />} />
+                      <Route path="delete" element={<CityDelete />} />
+                      {/* City Names */}
+                      <Route path="names">
+                        <Route index element={<CityNames />} />
+                        <Route path="edit" element={<CityNameEdit />} />
+                        <Route path=":cityNameId/edit" element={<CityNameEdit />} />
+                        <Route path=":cityNameId/delete" element={<CityNameDelete />} />
+                      </Route>
                     </Route>
                   </Route>
                 </Route>
